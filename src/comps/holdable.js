@@ -23,12 +23,12 @@ export function holdable(node, duration = 750) {
 	node.addEventListener("mousedown", onDown)
 	node.addEventListener("mouseup", onUp)
 	node.addEventListener("touchstart", onDown)
-	node.addEventListener("touchend", onDown)
 	
 	return {
 		destroy() {
 			node.onmousedown = null
 			node.onmouseup = null
+			node.ontouchstart = null
 		}
 	}
 }
