@@ -5,15 +5,17 @@ export function holdable(node, duration = 750) {
 	
 	function onDown() {
 		clicked = true
+		triggerPress = true
 		timeout = setTimeout(function () {
+			clicked = false
 			triggerPress = false
 			node.dispatchEvent(new CustomEvent("hold"))
 		}, duration)
 	}
 	
 	function onUp() {
+		clearTimeout(timeout)
 		if (triggerPress && clicked) {
-			clearTimeout(timeout)
 			node.dispatchEvent(new CustomEvent("press"))
 		}
 		triggerPress = true

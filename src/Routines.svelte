@@ -4,7 +4,8 @@
 		goTo,
 		getRoutineTime,
 		getRoutineCalories,
-		newId
+		newId,
+		ask
 	} from "./store"
 	import Button from "./comps/Button.svelte"
 	import HorizontalCard from "./comps/HorizontalCard.svelte"
@@ -19,10 +20,11 @@
 			on:press={function () {
 				goTo(Routine, { i }, "")
 			}}
-			on:hold={function () {
-				routines.update(function (old) {
-					return [...old.slice(0, i), ...old.slice(i + 1)]
-				})
+			on:hold={async function () {
+				if (await ask(`Delete "${routine.name}?"`))
+					routines.update(function (old) {
+						return [...old.slice(0, i), ...old.slice(i + 1)]
+					})
 			}}
 		>
 			<HorizontalCard>

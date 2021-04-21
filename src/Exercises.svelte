@@ -1,7 +1,7 @@
 <script>
 	export let routineIndex = 0
 
-	import { exerciseTable, routines, goTo, newId } from "./store.js"
+	import { exerciseTable, routines, goTo, newId, ask } from "./store.js"
 	import Button from "./comps/Button.svelte"
 	import HorizontalCard from "./comps/HorizontalCard.svelte"
 	import { holdable } from "./comps/holdable.js"
@@ -31,10 +31,11 @@
 						""
 					)
 				}}
-				on:hold={function () {
-					exerciseTable.update(function (old) {
-						return [...old.slice(0, i), ...old.slice(i + 1)]
-					})
+				on:hold={async function () {
+					if (await ask(`Delete "${exercise.name}"?`))
+						exerciseTable.update(function (old) {
+							return [...old.slice(0, i), ...old.slice(i + 1)]
+						})
 				}}
 			>
 				<HorizontalCard>

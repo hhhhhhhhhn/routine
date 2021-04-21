@@ -1,6 +1,7 @@
 <script>
 	import { hist } from "./store.js"
 	import Bar from "./Bar.svelte"
+	import Dialogue from "./Dialogue.svelte"
 	import { fade } from "svelte/transition"
 </script>
 
@@ -10,3 +11,5 @@
 		<svelte:component this={$hist[0].page} {...$hist[0].props} />
 	</div>
 {/key}
+
+<Dialogue />

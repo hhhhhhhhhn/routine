@@ -76,15 +76,30 @@ export const getRoutineCalories = function (i) {
 	}
 }
 
+export let dialogue = writable({text: "", callback: function(){}})
+
+export const ask = async function(text) {
+	if(get(dialogue).text) return new Promise(function(resolve) {
+		resolve(false)
+	})
+	return new Promise(function(resolve) {
+		dialogue.set({text: text, callback: function(value) {
+			dialogue.set({text: "", callback: function(){}})
+			resolve(value)
+		}})
+	})
+}
+
+
 let id = Number(localStorage.getItem("id")) || 99
 export const newId = function() {
 	localStorage.setItem("id", `${id + 1}`)
 	return id++
 }
 
-/* DEGUB
+// /* DEGUB
 window.log = function() {
-	console.log(get(routines), get(exerciseTable), get(hist))
+	console.log(get(routines), get(exerciseTable), get(hist), get(dialogue))
 }
 
 window.wipe = function() {
@@ -94,4 +109,6 @@ window.wipe = function() {
 	localStorage.removeItem("exerciseTable")
 	window.location.reload()
 }
-*/
+
+window.ask = ask
+// */
