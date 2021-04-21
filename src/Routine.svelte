@@ -3,54 +3,48 @@
 	import Button from "./comps/Button.svelte"
 	import HorizontalCard from "./comps/HorizontalCard.svelte"
 	import Exercises from "./Exercises.svelte"
+	import Go from "./Go.svelte"
 	import AddExercise from "./AddExercise.svelte"
 	import {
 		exerciseTable,
 		routines,
 		getRoutineTime,
 		getRoutineCalories,
-		goTo
+		goTo,
+		computedRoutines
 	} from "./store.js"
 	import { holdable } from "./comps/holdable.js"
 	import { fade } from "svelte/transition"
-
-	let routine = $routines[i]
-	$: computedExercises = routine.exercises.map(function (exercise) {
-		return {
-			...$exerciseTable.find(function (x) {
-				return exercise.exerciseId === x.id
-			}),
-			...exercise
-		}
-	})
 </script>
 
-<h1 contenteditable="true" bind:textContent={routine.name} />
+<h1 contenteditable="true" bind:textContent={$routines[i].name} />
 <info>
-	{#key (routine, $exerciseTable)}
+	{#key ($routines[i], $exerciseTable)}
 		<p>{Math.round(getRoutineTime(i) / 60)} minute(s)</p>
 		<p>{getRoutineCalories(i)} kcal.</p>
-		{#if routine.exercises}
-			<p>{routine.exercises.length} exercises</p>
+		{#if $routines[i].exercises}
+			<p>{$routines[i].exercises.length} exercises</p>
 		{/if}
 	{/key}
 	<div>
-		<input type="number" bind:value={routine.break} />
+		<input type="number" bind:value={$routines[i].break} />
 		<span>second breaks</span>
 	</div>
 </info>
 
 <list>
-	{#if routine.exercises && routine.exercises.length}
-		{#each computedExercises as { name, reps, time, calories, id }, j (id)}
-			<!-- I'm going to hell for this -->
+	{#if $routines[i].exercises && $routines[i].exercises.length}
+		{#each $computedRoutines[i].computedExercises as { name, reps, time, calories, id }, j (id)}
 			<div
 				use:holdable
 				on:hold={function () {
-					routine.exercises = [
-						...routine.exercises.slice(0, j),
-						...routine.exercises.slice(j + 1)
+					$routines[i].exercises = [
+						...$routines[i].exercises.slice(0, j),
+						...$routines[i].exercises.slice(j + 1)
 					]
+					routines.update(function (old) {
+						return old
+					})
 				}}
 				on:press={function () {
 					if (name !== undefined)
@@ -77,6 +71,12 @@
 		<p id="notfound" in:fade>No exercises.</p>
 	{/if}
 </list>
+<button
+	id="go"
+	on:click={function () {
+		goTo(Go, { i: i }, "")
+	}}>Go!</button
+>
 
 <div id="button">
 	<Button
@@ -127,5 +127,24 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+	}
+	#go {
+		font-size: 2em;
+		font-weight: bold;
+		padding: 0.3em;
+		padding-left: 0.7em;
+		padding-right: 0.7em;
+		display: block;
+		margin: 35px auto;
+		background-color: var(--fg);
+		color: var(--bg);
+		transition: filter 0.2s;
+	}
+	#go:hover {
+		filter: brightness(83%);
+		cursor: pointer;
+	}
+	#go:active {
+		filter: brightness(66%);
 	}
 </style>

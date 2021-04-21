@@ -1,4 +1,4 @@
-import { get, writable } from "svelte/store"
+import { derived, get, writable } from "svelte/store"
 import Routines from "./Routines.svelte"
 
 function persistant(name, initial) {
@@ -18,9 +18,30 @@ export const routines = persistant("routines", [
 		{id: 4, exerciseId: 5, reps: 30, time: 120},
 	]}
 ])
+
 export const exerciseTable = persistant("exerciseTable", [
 	{id: 5, name: "Example Exercise", calories: 2}
 ])
+
+export const computedRoutines = derived(
+	[routines, exerciseTable],
+	function([$routines, $exerciseTable], set) {
+		let value = []
+		for(let routine of $routines) {
+			let computedExercises = routine.exercises.map(function (exercise) {
+				return {
+					...$exerciseTable.find(function (x) {
+						return exercise.exerciseId === x.id
+					}),
+					...exercise
+				}
+			})
+			value.push({...routine, computedExercises})
+		}
+		set(value)
+	}
+)
+
 export const hist = writable([
 	{page: Routines, props: {}, title: "Routines"}
 ])
