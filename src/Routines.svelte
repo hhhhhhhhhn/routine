@@ -21,7 +21,7 @@
 				goTo(Routine, { i }, "")
 			}}
 			on:hold={async function () {
-				if (await ask(`Delete "${routine.name}?"`))
+				if (await ask(`Delete "${routine.name}"?`))
 					routines.update(function (old) {
 						return [...old.slice(0, i), ...old.slice(i + 1)]
 					})
