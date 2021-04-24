@@ -19,6 +19,7 @@
 	}
 
 	#bar {
+		z-index: 999;
 		position: fixed;
 		height: 60px;
 		display: flex;
