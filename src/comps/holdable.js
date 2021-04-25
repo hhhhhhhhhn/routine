@@ -22,9 +22,17 @@ export function holdable(node, duration = 750) {
 		clicked = false
 	}
 	
+	function onCancel() {
+		clearTimeout(timeout)
+		triggerPress = true
+		clicked = false
+	}
+	
 	node.addEventListener("mousedown", onDown)
 	node.addEventListener("mouseup", onUp)
+	node.addEventListener("mouseleave", onCancel)
 	node.addEventListener("touchstart", onDown)
+	node.addEventListener("touchcancel", onCancel)
 	
 	return {
 		destroy() {

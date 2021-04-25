@@ -29,6 +29,7 @@
 		font-size: large;
 		font-weight: bold;
 		border-bottom: 2px solid var(--fg);
+		background-color: var(--bg);
 	}
 
 	button {
