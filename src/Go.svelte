@@ -2,6 +2,7 @@
 	export let i = 0 // Routine index
 
 	import { computedRoutines } from "./store.js"
+	import { beep } from "./comps/sounds.js"
 
 	let currentExerciseIndex = -1 // -1 means not to start yet.
 	$: currentExercise =
@@ -18,11 +19,15 @@
 		currentTime += interval / 1000
 		if (inBreak) {
 			if (currentTime >= $computedRoutines[i].break) {
+				// break complete
 				currentTime = interval / 1000
 				inBreak = false
+				beep("triangle", 4)
 			}
 		} else {
 			if (currentTime >= currentExercise.time) {
+				// exercise complete
+				beep("sine", 4)
 				currentTime = interval / 1000
 				inBreak = true
 				if (

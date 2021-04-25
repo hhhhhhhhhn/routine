@@ -23,8 +23,8 @@
 
 <style>
 	button {
-		width: clamp(100px, 90vw, 700px);
 		height: 60px;
+		width: 100%;
 		border: 2px solid var(--fg);
 		border-radius: 15px;
 		margin-bottom: 10px;

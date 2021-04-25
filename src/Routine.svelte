@@ -74,7 +74,8 @@
 <button
 	id="go"
 	on:click={function () {
-		goTo(Go, { i: i }, "")
+		if ($computedRoutines[i].computedExercises.length)
+			goTo(Go, { i: i }, "")
 	}}>Go!</button
 >
 
@@ -93,7 +94,7 @@
 		margin: 50px;
 	}
 	info {
-		width: 100vw;
+		width: 100%;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
@@ -127,6 +128,10 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		width: 100%;
+	}
+	list div {
+		width: 100%;
 	}
 	#go {
 		font-size: 2em;

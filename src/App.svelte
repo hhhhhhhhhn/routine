@@ -13,3 +13,11 @@
 {/key}
 
 <Dialogue />
+
+<style>
+	div {
+		display: block;
+		margin: 0 auto;
+		width: clamp(100px, 90vw, 700px);
+	}
+</style>

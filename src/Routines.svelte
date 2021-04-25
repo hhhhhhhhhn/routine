@@ -56,6 +56,9 @@
 </div>
 
 <style>
+	div {
+		width: 100%;
+	}
 	#list {
 		display: flex;
 		flex-direction: column;
