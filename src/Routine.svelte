@@ -102,13 +102,14 @@
 		flex-wrap: wrap;
 		align-content: start;
 		margin-bottom: 35px;
-		text-align: center;
+		text-align: cpenter;
+		font-size: large;
 	}
 	info p,
 	info div {
 		padding: 5px;
-		padding-right: 100px;
-		padding-left: 100px;
+		padding-right: 60px;
+		padding-left: 60px;
 	}
 	info input {
 		width: 3em;

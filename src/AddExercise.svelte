@@ -45,6 +45,7 @@
 		justify-content: space-between;
 		flex-wrap: wrap;
 		text-align: center;
+		font-size: large;
 	}
 	h1 {
 		font-size: 4em;
