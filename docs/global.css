@@ -1,7 +1,7 @@
 @media (prefers-color-scheme: light) {
 	:root {
-		--bg: #aaaaaa !important;
-		--fg: #333333 !important;
+		--bg: #333333 !important;
+		--fg: #aaaaaa!important;
 	}
 }
 :root {
