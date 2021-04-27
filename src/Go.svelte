@@ -3,6 +3,7 @@
 
 	import { computedRoutines } from "./store.js"
 	import { beep } from "./comps/sounds.js"
+	import { onDestroy } from "svelte"
 
 	let currentExerciseIndex = -1 // -1 means not to start yet.
 	$: currentExercise =
@@ -11,34 +12,40 @@
 	let currentTime = 0 // time from exercise start in seconds
 	let inBreak = false
 
-	const interval = 100 // time between counts in ms
+	const intervalTime = 100 // time between counts in ms
 
-	setInterval(function () {
+	let interval = setInterval(function () {
 		if (currentExerciseIndex == -1) return
+		currentTime += intervalTime / 1000
 
-		currentTime += interval / 1000
 		if (inBreak) {
 			if (currentTime >= $computedRoutines[i].break) {
 				// break complete
-				currentTime = interval / 1000
+				currentTime = intervalTime / 1000
 				inBreak = false
 				beep("triangle", 4)
 			}
-		} else {
-			if (currentTime >= currentExercise.time) {
-				// exercise complete
-				beep("sine", 4)
-				currentTime = interval / 1000
-				inBreak = true
-				if (
-					currentExerciseIndex <
-					$computedRoutines[i].computedExercises.length - 1
-				)
-					currentExerciseIndex++
-				else currentExerciseIndex = -1
-			}
+			return
 		}
-	}, interval)
+
+		// if not in break
+		if (currentTime >= currentExercise.time) {
+			// exercise complete
+			beep("sine", 4)
+			currentTime = intervalTime / 1000
+			inBreak = true
+			if (
+				currentExerciseIndex <
+				$computedRoutines[i].computedExercises.length - 1
+			)
+				currentExerciseIndex++
+			else currentExerciseIndex = -1
+		}
+	}, intervalTime)
+
+	onDestroy(function () {
+		clearInterval(interval)
+	})
 </script>
 
 <container>

@@ -13,6 +13,7 @@
 	{#if $exerciseTable.length}
 		{#each $exerciseTable as exercise, i}
 			<div
+				id="exercise"
 				use:holdable
 				on:press={function () {
 					$routines[routineIndex].exercises.push({
@@ -92,5 +93,8 @@
 	#notfound {
 		font-size: x-large;
 		text-align: center;
+	}
+	#exercise {
+		width: 100%;
 	}
 </style>
