@@ -1316,13 +1316,17 @@ var app = (function () {
     	node.addEventListener("mouseup", onUp);
     	node.addEventListener("mouseleave", onCancel);
     	node.addEventListener("touchstart", onDown);
+    	node.addEventListener("touchmove", onCancel);
     	node.addEventListener("touchcancel", onCancel);
     	
     	return {
     		destroy() {
     			node.onmousedown = null;
     			node.onmouseup = null;
+    			node.onmouseleave = null;
     			node.ontouchstart = null;
+    			node.ontouchmove = null;
+    			node.ontouchcancel = null;
     		}
     	}
     }
@@ -4065,19 +4069,19 @@ var app = (function () {
     			t3 = space();
     			button1 = element("button");
     			button1.textContent = "No";
-    			attr_dev(h1, "class", "svelte-f4ee0");
+    			attr_dev(h1, "class", "svelte-7nu099");
     			add_location(h1, file$1, 8, 3, 187);
     			attr_dev(button0, "id", "yes");
-    			attr_dev(button0, "class", "svelte-f4ee0");
+    			attr_dev(button0, "class", "svelte-7nu099");
     			add_location(button0, file$1, 10, 4, 240);
     			attr_dev(button1, "id", "no");
-    			attr_dev(button1, "class", "svelte-f4ee0");
+    			attr_dev(button1, "class", "svelte-7nu099");
     			add_location(button1, file$1, 16, 4, 358);
-    			attr_dev(buttoncontainer, "class", "svelte-f4ee0");
+    			attr_dev(buttoncontainer, "class", "svelte-7nu099");
     			add_location(buttoncontainer, file$1, 9, 3, 217);
-    			attr_dev(box, "class", "svelte-f4ee0");
+    			attr_dev(box, "class", "svelte-7nu099");
     			add_location(box, file$1, 7, 2, 177);
-    			attr_dev(darken, "class", "svelte-f4ee0");
+    			attr_dev(darken, "class", "svelte-7nu099");
     			add_location(darken, file$1, 6, 1, 129);
     		},
     		m: function mount(target, anchor) {

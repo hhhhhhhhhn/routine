@@ -32,13 +32,17 @@ export function holdable(node, duration = 750) {
 	node.addEventListener("mouseup", onUp)
 	node.addEventListener("mouseleave", onCancel)
 	node.addEventListener("touchstart", onDown)
+	node.addEventListener("touchmove", onCancel)
 	node.addEventListener("touchcancel", onCancel)
 	
 	return {
 		destroy() {
 			node.onmousedown = null
 			node.onmouseup = null
+			node.onmouseleave = null
 			node.ontouchstart = null
+			node.ontouchmove = null
+			node.ontouchcancel = null
 		}
 	}
 }
