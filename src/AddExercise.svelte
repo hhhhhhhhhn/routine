@@ -9,8 +9,8 @@
 		return x.id === routineExercise.exerciseId
 	})
 
-	$: [exercise.name, exercise.calories, exerciseTable.save()]
-	$: [routineExercise.time, routineExercise.reps, routines.save()]
+	$: [exercise.name, exercise.calories, exerciseTable.save()] // saves on
+	$: [routineExercise.time, routineExercise.reps, routines.save()] // change
 </script>
 
 <h1 contenteditable="true" bind:textContent={exercise.name} />

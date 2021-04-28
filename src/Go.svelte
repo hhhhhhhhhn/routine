@@ -9,21 +9,21 @@
 	$: currentExercise =
 		$computedRoutines[i].computedExercises[currentExerciseIndex]
 
-	let currentTime = 0 // time from exercise start in seconds
+	let currentTime = 0 // time from exercise/break start in seconds
 	let inBreak = false
 
-	const intervalTime = 100 // time between counts in ms
+	const intervalTime = 0.1 // time between counts in seconds
 
 	let interval = setInterval(function () {
 		if (currentExerciseIndex == -1) return
-		currentTime += intervalTime / 1000
+		currentTime += intervalTime
 
 		if (inBreak) {
 			if (currentTime >= $computedRoutines[i].break) {
 				// break complete
-				currentTime = intervalTime / 1000
-				inBreak = false
 				beep("triangle", 4)
+				currentTime = intervalTime
+				inBreak = false
 			}
 			return
 		}
@@ -32,7 +32,7 @@
 		if (currentTime >= currentExercise.time) {
 			// exercise complete
 			beep("sine", 4)
-			currentTime = intervalTime / 1000
+			currentTime = intervalTime
 			inBreak = true
 			if (
 				currentExerciseIndex <
@@ -41,7 +41,7 @@
 				currentExerciseIndex++
 			else currentExerciseIndex = -1
 		}
-	}, intervalTime)
+	}, intervalTime * 1000)
 
 	onDestroy(function () {
 		clearInterval(interval)

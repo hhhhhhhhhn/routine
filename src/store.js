@@ -33,6 +33,7 @@ export const exerciseTable = persistant("exerciseTable", [
 
 export const computedRoutines = derived(
 	[routines, exerciseTable],
+
 	function([$routines, $exerciseTable], set) {
 		let value = []
 		for(let routine of $routines) {
@@ -50,7 +51,7 @@ export const computedRoutines = derived(
 	}
 )
 
-export const hist = writable([
+export const hist = writable([ // history
 	{page: Routines, props: {}, title: "Routines"}
 ])
 
@@ -110,7 +111,7 @@ export const getRoutineCalories = function (i) {
 export let dialogue = writable({text: "", callback: function(){}})
 
 export const ask = async function(text) {
-	if(get(dialogue).text) return new Promise(function(resolve) {
+	if(get(dialogue).text) return new Promise(function(resolve) { // already asking
 		resolve(false)
 	})
 	return new Promise(function(resolve) {
