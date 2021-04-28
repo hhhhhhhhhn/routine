@@ -1,12 +1,20 @@
 import { derived, get, writable } from "svelte/store"
 import Routines from "./Routines.svelte"
 
+// Extended writable store
+// Saved and loaded to localstorage with name. 
+// Also exposes save() function to do it manually
 function persistant(name, initial) {
 	let storedValue = JSON.parse(localStorage.getItem(name))
+
 	let store = writable(storedValue === null ? initial : storedValue)
-	window.addEventListener("beforeunload", function() {
+
+	store.save = function() {
 		localStorage.setItem(name, JSON.stringify(get(store)))
-	})
+		// console.log(`${name} saved!`)
+	}
+
+	window.addEventListener("beforeunload", store.write)
 	return store
 }
 
@@ -60,20 +68,22 @@ export const goBack = function (n = 1) {
 }
 
 export const getRoutineTime = function (i) {
+	let routine
 	try {
-		let routine = get(routines)[i]
-		let totalTime = 0
-
-		for(let { time } of routine.exercises) {
-			totalTime += time || 0
-		}
-		totalTime += routine.break * (routine.exercises.length - 1)
-	
-		return totalTime
-	}
-	catch {
+		routine = get(routines)[i]
+	} catch {
 		return 0
 	}
+
+	if (routine.exercises.length == 0) return 0
+	let totalTime = 0
+
+	for(let { time } of routine.exercises) {
+		totalTime += time || 0
+	}
+	totalTime += routine.break * (routine.exercises.length - 1)
+
+	return totalTime
 }
 
 export const getRoutineCalories = function (i) {

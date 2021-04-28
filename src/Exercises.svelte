@@ -22,6 +22,7 @@
 						reps: 0,
 						time: 30
 					})
+					routines.save()
 					goTo(
 						AddExercise,
 						{
@@ -33,10 +34,12 @@
 					)
 				}}
 				on:hold={async function () {
-					if (await ask(`Delete "${exercise.name}"?`))
+					if (await ask(`Delete "${exercise.name}"?`)) {
 						exerciseTable.update(function (old) {
 							return [...old.slice(0, i), ...old.slice(i + 1)]
 						})
+						exerciseTable.save()
+					}
 				}}
 			>
 				<HorizontalCard>
@@ -64,6 +67,8 @@
 				reps: 0,
 				time: 30
 			})
+			routines.save()
+			exerciseTable.save()
 			goTo(
 				AddExercise,
 				{

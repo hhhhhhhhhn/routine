@@ -15,6 +15,8 @@
 	} from "./store.js"
 	import { holdable } from "./comps/holdable.js"
 	import { fade } from "svelte/transition"
+
+	$: [$routines[i].name, $routines[i].break, routines.save()] // saves bound
 </script>
 
 <h1 contenteditable="true" bind:textContent={$routines[i].name} />
@@ -43,8 +45,10 @@
 						...$routines[i].exercises.slice(j + 1)
 					]
 					routines.update(function (old) {
+						// just send update
 						return old
 					})
+					routines.save()
 				}}
 				on:press={function () {
 					if (name !== undefined)

@@ -50,6 +50,7 @@
 				break: 10,
 				exercises: []
 			})
+			routines.save()
 			goTo(Routine, { i: $routines.length - 1 }, "")
 		}}
 	/>
@@ -78,5 +79,6 @@
 		top: 100%;
 		left: 100%;
 		transform: translate(-150%, -150%);
+		width: auto;
 	}
 </style>

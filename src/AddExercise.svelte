@@ -8,6 +8,9 @@
 	let exercise = $exerciseTable.find(function (x) {
 		return x.id === routineExercise.exerciseId
 	})
+
+	$: [exercise.name, exercise.calories, exerciseTable.save()]
+	$: [routineExercise.time, routineExercise.reps, routines.save()]
 </script>
 
 <h1 contenteditable="true" bind:textContent={exercise.name} />
