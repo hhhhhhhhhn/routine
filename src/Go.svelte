@@ -11,11 +11,12 @@
 
 	let currentTime = 0 // time from exercise/break start in seconds
 	let inBreak = false
+	let paused = false
 
 	const intervalTime = 0.1 // time between counts in seconds
 
 	let interval = setInterval(function () {
-		if (currentExerciseIndex == -1) return
+		if (currentExerciseIndex == -1 || paused) return
 		currentTime += intervalTime
 
 		if (inBreak) {
@@ -51,8 +52,10 @@
 <container>
 	{#if currentExerciseIndex == -1}
 		<button
+			id="start"
 			on:click={function () {
 				currentExerciseIndex = 0
+				paused = false
 			}}>Start</button
 		>
 	{:else}
@@ -79,6 +82,30 @@
 		</roundthing>
 	{/if}
 </container>
+{#if currentExerciseIndex !== -1}
+	<div id="controlbuttons">
+		<button
+			on:click={function () {
+				if (currentTime < 3) {
+					currentExerciseIndex--
+				}
+				currentTime = 0
+			}}>⏮︎</button
+		>
+		<button
+			on:click={function () {
+				paused = !paused
+			}}>{paused ? "⏵︎" : "⏸︎"}</button
+		>
+		<button
+			on:click={function () {
+				currentTime = inBreak
+					? $computedRoutines[i].break
+					: currentExercise.time
+			}}>⏭︎</button
+		>
+	</div>
+{/if}
 
 <style>
 	container {
@@ -91,8 +118,9 @@
 		justify-content: center;
 		height: 100%;
 		width: 100%;
+		z-index: -1;
 	}
-	button,
+	#start,
 	roundthing {
 		font-size: 3em;
 		height: 300px;
@@ -106,8 +134,7 @@
 		justify-content: center;
 		flex-direction: column;
 	}
-
-	button {
+	#start {
 		transition: filter 0.2s;
 	}
 	button:hover {
@@ -135,8 +162,22 @@
 		transition: transform 0.1s;
 		transition-timing-function: linear;
 		background-color: var(--fg);
-		--rotate: 20deg;
+		--rotate: 0deg;
 		transform: translate(-50%, -50%) rotate(var(--rotate))
 			translateY(-150px);
+	}
+	#controlbuttons {
+		position: fixed;
+		top: 100%;
+		left: 50%;
+		transform: translate(-50%, -150%);
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		width: 300px;
+	}
+	#controlbuttons button {
+		font-size: 5em;
+		border: none;
 	}
 </style>
