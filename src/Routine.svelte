@@ -63,10 +63,10 @@
 					<b>{name}</b>
 					{#if reps}
 						<p>{reps} reps</p>
-						<p>{reps * calories} kcal.</p>
+						<p>{Math.round(reps * calories)} kcal.</p>
 					{:else}
 						<p>{time} seconds</p>
-						<p>{time * calories} kcal.</p>
+						<p>{Math.round(time * calories)} kcal.</p>
 					{/if}
 				</HorizontalCard>
 			</div>

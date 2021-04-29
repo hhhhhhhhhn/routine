@@ -86,9 +86,17 @@
 	<div id="controlbuttons">
 		<button
 			on:click={function () {
-				if (currentTime < 3) {
-					currentExerciseIndex--
+				if (currentTime > 3) {
+					currentTime = 0
+					return
 				}
+				if (inBreak) {
+					currentExerciseIndex--
+					inBreak = false
+					currentTime = 0
+					return
+				}
+				inBreak = true
 				currentTime = 0
 			}}>⏮︎</button
 		>
