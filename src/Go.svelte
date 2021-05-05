@@ -44,21 +44,68 @@
 		}
 	}, intervalTime * 1000)
 
+	function start() {
+		currentExerciseIndex = 0
+		currentTime = 0
+		paused = false
+	}
+
+	function playpause() {
+		if (currentExerciseIndex == -1) return start()
+		paused = !paused
+	}
+
+	function back() {
+		if (currentTime > 3) {
+			currentTime = 0
+			return
+		}
+		if (inBreak) {
+			currentExerciseIndex--
+			inBreak = false
+			currentTime = 0
+			return
+		}
+		if (currentExerciseIndex == 0) {
+			currentExerciseIndex = -1
+			return
+		}
+		inBreak = true
+		currentTime = 0
+	}
+
+	function forward() {
+		currentTime = inBreak
+			? $computedRoutines[i].break
+			: currentExercise.time
+	}
+
+	function keyHandler(event) {
+		switch (event.key) {
+			case " ":
+				event.preventDefault()
+				playpause()
+				break
+			case "ArrowLeft":
+				back()
+				break
+			case "ArrowRight":
+				forward()
+				break
+		}
+	}
+
+	document.addEventListener("keydown", keyHandler)
+
 	onDestroy(function () {
 		clearInterval(interval)
+		document.removeEventListener("keydown", keyHandler)
 	})
 </script>
 
 <container>
 	{#if currentExerciseIndex == -1}
-		<button
-			id="start"
-			on:click={function () {
-				currentExerciseIndex = 0
-				currentTime = 0
-				paused = false
-			}}>Start</button
-		>
+		<button id="start" on:click={start}>Start</button>
 	{:else}
 		<div
 			id="circle"
@@ -85,38 +132,9 @@
 </container>
 {#if currentExerciseIndex !== -1}
 	<div id="controlbuttons">
-		<button
-			on:click={function () {
-				if (currentTime > 3) {
-					currentTime = 0
-					return
-				}
-				if (inBreak) {
-					currentExerciseIndex--
-					inBreak = false
-					currentTime = 0
-					return
-				}
-				if (currentExerciseIndex == 0) {
-					currentExerciseIndex = -1
-					return
-				}
-				inBreak = true
-				currentTime = 0
-			}}>⏮︎&#xFE0E;</button
-		>
-		<button
-			on:click={function () {
-				paused = !paused
-			}}>{paused ? "⏵︎" : "⏸︎"}&#xFE0E;</button
-		>
-		<button
-			on:click={function () {
-				currentTime = inBreak
-					? $computedRoutines[i].break
-					: currentExercise.time
-			}}>⏭︎&#xFE0E;</button
-		>
+		<button on:click={back}>⏮︎&#xFE0E;</button>
+		<button on:click={playpause}>{paused ? "⏵︎" : "⏸︎"}&#xFE0E;</button>
+		<button on:click={forward}>⏭︎&#xFE0E;</button>
 	</div>
 {/if}
 

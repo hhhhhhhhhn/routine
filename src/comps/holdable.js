@@ -20,6 +20,7 @@ export function holdable(node, duration = 750) {
 		}
 		triggerPress = true
 		clicked = false
+		console.log("clicked")
 	}
 	
 	function onCancel() {
@@ -29,8 +30,8 @@ export function holdable(node, duration = 750) {
 	}
 	
 	node.addEventListener("mousedown", onDown)
-	node.addEventListener("mouseup", onUp)
-	node.addEventListener("mouseleave", onCancel)
+	node.addEventListener("click", onUp)
+
 	node.addEventListener("touchstart", onDown)
 	node.addEventListener("touchmove", onCancel)
 	node.addEventListener("touchcancel", onCancel)
@@ -39,7 +40,6 @@ export function holdable(node, duration = 750) {
 		destroy() {
 			node.onmousedown = null
 			node.onmouseup = null
-			node.onmouseleave = null
 			node.ontouchstart = null
 			node.ontouchmove = null
 			node.ontouchcancel = null

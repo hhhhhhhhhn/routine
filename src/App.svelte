@@ -1,8 +1,21 @@
 <script>
-	import { hist } from "./store.js"
+	import { goBack, hist } from "./store.js"
 	import Bar from "./Bar.svelte"
 	import Dialogue from "./Dialogue.svelte"
 	import { fade } from "svelte/transition"
+
+	document.addEventListener("keydown", function (event) {
+		switch (event.key) {
+			case "Escape":
+				goBack()
+				break
+			case " ":
+				let event = document.createEvent("MouseEvents")
+				event.initEvent("mousedown", true, true)
+				document.activeElement.dispatchEvent(event)
+				break
+		}
+	})
 </script>
 
 <Bar />
