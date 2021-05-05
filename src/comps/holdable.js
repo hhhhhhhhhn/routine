@@ -20,7 +20,6 @@ export function holdable(node, duration = 750) {
 		}
 		triggerPress = true
 		clicked = false
-		console.log("clicked")
 	}
 	
 	function onCancel() {
