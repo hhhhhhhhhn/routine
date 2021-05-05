@@ -55,6 +55,7 @@
 			id="start"
 			on:click={function () {
 				currentExerciseIndex = 0
+				currentTime = 0
 				paused = false
 			}}>Start</button
 		>
@@ -96,21 +97,25 @@
 					currentTime = 0
 					return
 				}
+				if (currentExerciseIndex == 0) {
+					currentExerciseIndex = -1
+					return
+				}
 				inBreak = true
 				currentTime = 0
-			}}>⏮︎</button
+			}}>⏮︎&#xFE0E;</button
 		>
 		<button
 			on:click={function () {
 				paused = !paused
-			}}>{paused ? "⏵︎" : "⏸︎"}</button
+			}}>{paused ? "⏵︎" : "⏸︎"}&#xFE0E;</button
 		>
 		<button
 			on:click={function () {
 				currentTime = inBreak
 					? $computedRoutines[i].break
 					: currentExercise.time
-			}}>⏭︎</button
+			}}>⏭︎&#xFE0E;</button
 		>
 	</div>
 {/if}
