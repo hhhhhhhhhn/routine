@@ -1,6 +1,6 @@
 let context = new AudioContext()
 
-// Makes a beeping sound using the AudioContext API
+/** Makes a beeping sound using the AudioContext API */
 export function beep(type = "triangle", duration = 2) {
 	let oscilator = context.createOscillator()
 	let gain = context.createGain()
