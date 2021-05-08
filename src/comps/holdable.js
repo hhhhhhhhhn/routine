@@ -1,3 +1,4 @@
+// Makes an element emit 2 events, "press" and "hold"
 export function holdable(node, duration = 750) {
 	let clicked = false
 	let timeout

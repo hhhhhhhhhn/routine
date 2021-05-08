@@ -55,6 +55,7 @@ export const hist = writable([ // history
 	{page: Routines, props: {}, title: "Routines"}
 ])
 
+// Goes to a component as page
 export const goTo = function (page = Routines, props = {}, title = "Routines") {
 	window.history.pushState({}, title, location.href)
 	hist.update(function(old) {
@@ -62,11 +63,13 @@ export const goTo = function (page = Routines, props = {}, title = "Routines") {
 	})
 }
 
+// Goes back n pages in history
 export const goBack = function (n = 1) {
 	if(get(hist).length <= 1) return true
 	window.history.go(-n)
 }
 
+// Handles the back button
 window.onpopstate = function () {
 	if(get(hist).length <= 1) return
 	hist.update(function(old) {
@@ -74,6 +77,7 @@ window.onpopstate = function () {
 	})
 }
 
+// Gets the total time of the ith routine. Includes breaks
 export const getRoutineTime = function (i) {
 	let routine
 	try {
@@ -93,6 +97,7 @@ export const getRoutineTime = function (i) {
 	return Math.round(totalTime)
 }
 
+// Gets the total calories of the ith routine.
 export const getRoutineCalories = function (i) {
 	try {
 		let routine = get(routines)[i]
@@ -116,6 +121,7 @@ export const getRoutineCalories = function (i) {
 
 export let dialogue = writable({text: "", callback: function(){}})
 
+// Returns answers of yes/no question.
 export const ask = async function(text) {
 	if(get(dialogue).text) return new Promise(function(resolve) { // already asking
 		resolve(false)
@@ -128,6 +134,7 @@ export const ask = async function(text) {
 	})
 }
 
+// Returns the index of the option chosen for the question text given.
 export const multiple = async function (text, options) {
 	if(get(dialogue).text) return new Promise(function(resolve) { // already asking
 		resolve(false)
@@ -142,6 +149,7 @@ export const multiple = async function (text, options) {
 
 
 let id = Number(localStorage.getItem("id")) || 99
+// Generates new non-repeating ID.
 export const newId = function() {
 	localStorage.setItem("id", `${id + 1}`)
 	return id++

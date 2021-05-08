@@ -17,7 +17,7 @@
 	import { holdable } from "./comps/holdable.js"
 	import { fade } from "svelte/transition"
 
-	$: [$routines[i].name, $routines[i].break, routines.save()] // saves bound
+	$: [$routines[i].name, $routines[i].break, routines.save()] // saves routines when on of them is changed
 </script>
 
 <h1 contenteditable="true" bind:textContent={$routines[i].name} />
@@ -46,23 +46,21 @@
 						["Remove", "Move Up", "Move Down", "Cancel"]
 					)
 
-					if (action === false) return
-
 					switch (action) {
-						case 0:
+						case 0: // Removes jth exercise
 							$routines[i].exercises = [
 								...$routines[i].exercises.slice(0, j),
 								...$routines[i].exercises.slice(j + 1)
 							]
 							break
-						case 1:
+						case 1: // Moves jth exercise up
 							if (j == 0) break
 							let temp = $routines[i].exercises[j]
 							$routines[i].exercises[j] =
 								$routines[i].exercises[j - 1]
 							$routines[i].exercises[j - 1] = temp
 							break
-						case 2:
+						case 2: // Moves jth exercise down
 							if (j == $routines[i].exercises.length - 1) break
 							let temp2 = $routines[i].exercises[j]
 							$routines[i].exercises[j] =
@@ -70,6 +68,7 @@
 							$routines[i].exercises[j + 1] = temp2
 							break
 						default:
+							// Does nothing
 							break
 					}
 					routines.update(function (old) {
