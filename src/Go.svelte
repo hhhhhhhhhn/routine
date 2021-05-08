@@ -132,9 +132,9 @@
 </container>
 {#if currentExerciseIndex !== -1}
 	<div id="controlbuttons">
-		<button on:click={back}>⏮︎&#xFE0E;</button>
-		<button on:click={playpause}>{paused ? "⏵︎" : "⏸︎"}&#xFE0E;</button>
-		<button on:click={forward}>⏭︎&#xFE0E;</button>
+		<button on:click={back}>&lt;</button>
+		<button on:click={playpause}>&#x25cb;</button>
+		<button on:click={forward}>&gt;</button>
 	</div>
 {/if}
 
