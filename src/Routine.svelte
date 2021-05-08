@@ -11,7 +11,8 @@
 		getRoutineTime,
 		getRoutineCalories,
 		goTo,
-		computedRoutines
+		computedRoutines,
+		multiple
 	} from "./store.js"
 	import { holdable } from "./comps/holdable.js"
 	import { fade } from "svelte/transition"
@@ -39,11 +40,38 @@
 		{#each $computedRoutines[i].computedExercises as { name, reps, time, calories, id }, j (id)}
 			<div
 				use:holdable
-				on:hold={function () {
-					$routines[i].exercises = [
-						...$routines[i].exercises.slice(0, j),
-						...$routines[i].exercises.slice(j + 1)
-					]
+				on:hold={async function () {
+					let action = await multiple(
+						`What do you want to do with "${name}"?`,
+						["Remove", "Move Up", "Move Down", "Cancel"]
+					)
+
+					if (action === false) return
+
+					switch (action) {
+						case 0:
+							$routines[i].exercises = [
+								...$routines[i].exercises.slice(0, j),
+								...$routines[i].exercises.slice(j + 1)
+							]
+							break
+						case 1:
+							if (j == 0) break
+							let temp = $routines[i].exercises[j]
+							$routines[i].exercises[j] =
+								$routines[i].exercises[j - 1]
+							$routines[i].exercises[j - 1] = temp
+							break
+						case 2:
+							if (j == $routines[i].exercises.length - 1) break
+							let temp2 = $routines[i].exercises[j]
+							$routines[i].exercises[j] =
+								$routines[i].exercises[j + 1]
+							$routines[i].exercises[j + 1] = temp2
+							break
+						default:
+							break
+					}
 					routines.update(function (old) {
 						// just send update
 						return old
