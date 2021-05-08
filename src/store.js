@@ -90,7 +90,7 @@ export const getRoutineTime = function (i) {
 	}
 	totalTime += routine.break * (routine.exercises.length - 1)
 
-	return totalTime
+	return Math.round(totalTime)
 }
 
 export const getRoutineCalories = function (i) {
@@ -107,7 +107,7 @@ export const getRoutineCalories = function (i) {
 				continue
 			totalCalories += exercise.calories * (reps || time)
 		}
-		return totalCalories
+		return Math.round(totalCalories / 10) * 10 // Round to decimal
 	}
 	catch {
 		return 0
