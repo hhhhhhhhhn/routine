@@ -14,7 +14,7 @@ function persistant(name, initial) {
 		// console.log(`${name} saved!`)
 	}
 
-	window.addEventListener("beforeunload", store.write)
+	window.addEventListener("beforeunload", store.save)
 	return store
 }
 
