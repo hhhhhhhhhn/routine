@@ -117,7 +117,7 @@
 		/>
 		<roundthing>
 			<h1>{inBreak ? "Break" : currentExercise.name}</h1>
-			{#if currentExercise.reps}
+			{#if currentExercise.reps && !inBreak}
 				<h2>{currentExercise.reps} reps</h2>
 			{/if}
 			<h2>
