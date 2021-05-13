@@ -15,6 +15,7 @@
 
 body {
 	background-color: var(--bg);
+	max-height: 100vh;
 }
 
 * {
