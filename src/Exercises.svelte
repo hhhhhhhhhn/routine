@@ -19,8 +19,8 @@
 					$routines[routineIndex].exercises.push({
 						id: newId(),
 						exerciseId: exercise.id,
-						reps: 0,
-						time: 30
+						reps: exercise.lastReps ?? 0,
+						time: exercise.lastTime ?? 30
 					})
 					routines.save()
 					goTo(

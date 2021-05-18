@@ -32,11 +32,14 @@
 </info>
 <button
 	on:click={function () {
+		// goes back to routine
 		hist.update(function (old) {
 			old.shift()
 			if (old[0].title === "Add Exercise") old.shift()
 			return old
 		})
+		exercise.lastReps = routineExercise.reps
+		exercise.lastTime = routineExercise.time
 	}}>OK</button
 >
 
