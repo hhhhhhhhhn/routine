@@ -117,8 +117,10 @@
 		/>
 		<roundthing>
 			<h1>{inBreak ? "Break" : currentExercise.name}</h1>
-			{#if currentExercise.reps && !inBreak}
+			{#if !inBreak && currentExercise.reps}
 				<h2>{currentExercise.reps} reps</h2>
+			{:else if inBreak}
+				<h2>Next: {currentExercise.name}</h2>
 			{/if}
 			<h2>
 				{(
@@ -210,5 +212,9 @@
 	#controlbuttons button {
 		font-size: 5em;
 		border: none;
+		background-color: transparent;
+	}
+	#controlbuttons button:focus {
+		background-color: transparent;
 	}
 </style>
