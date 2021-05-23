@@ -1,5 +1,5 @@
 <script>
-	import { dialogue } from "./store.js"
+	import { dialogue } from "./js/dialogue.js"
 	import { fade } from "svelte/transition"
 </script>
 

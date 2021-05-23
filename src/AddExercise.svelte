@@ -1,7 +1,8 @@
 <script>
 	export let routineIndex = 0
 	export let routineExerciseIndex = 0
-	import { exerciseTable, routines, hist } from "./store.js"
+	import { exerciseTable, routines } from "./js/store.js"
+	import { hist } from "./js/history.js"
 
 	let routineExercise =
 		$routines[routineIndex].exercises[routineExerciseIndex]

@@ -10,10 +10,11 @@
 		routines,
 		getRoutineTime,
 		getRoutineCalories,
-		goTo,
-		computedRoutines,
-		multiple
-	} from "./store.js"
+		computedRoutines
+	} from "./js/store.js"
+	import { goTo } from "./js/history.js"
+	import { multiple } from "./js/dialogue.js"
+
 	import { holdable } from "./comps/holdable.js"
 	import { fade } from "svelte/transition"
 

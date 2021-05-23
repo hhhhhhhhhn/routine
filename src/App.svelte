@@ -1,5 +1,5 @@
 <script>
-	import { goBack, hist } from "./store.js"
+	import { goBack, hist } from "./js/history.js"
 	import Bar from "./Bar.svelte"
 	import Dialogue from "./Dialogue.svelte"
 	import { fade } from "svelte/transition"

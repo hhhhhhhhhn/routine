@@ -1,7 +1,7 @@
 <script>
 	export let i = 0 // Routine index
 
-	import { computedRoutines } from "./store.js"
+	import { computedRoutines } from "./js/store.js"
 	import { beep } from "./comps/sounds.js"
 	import { onDestroy } from "svelte"
 

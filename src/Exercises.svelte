@@ -1,7 +1,9 @@
 <script>
 	export let routineIndex = 0
 
-	import { exerciseTable, routines, goTo, newId, ask } from "./store.js"
+	import { exerciseTable, routines, newId } from "./js/store.js"
+	import { goTo } from "./js/history.js"
+	import { ask } from "./js/dialogue"
 	import Button from "./comps/Button.svelte"
 	import HorizontalCard from "./comps/HorizontalCard.svelte"
 	import { holdable } from "./comps/holdable.js"

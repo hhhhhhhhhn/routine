@@ -1,5 +1,5 @@
 <script>
-	import { hist, goBack } from "./store.js"
+	import { hist, goBack } from "./js/history.js"
 </script>
 
 <div id="bar" style={$hist[0].title ? "" : "border: none;"}>

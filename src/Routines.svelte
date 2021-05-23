@@ -1,12 +1,12 @@
 <script>
 	import {
 		routines,
-		goTo,
 		getRoutineTime,
 		getRoutineCalories,
-		newId,
-		ask
-	} from "./store"
+		newId
+	} from "./js/store"
+	import { goTo } from "./js/history.js"
+	import { ask } from "./js/dialogue.js"
 	import Button from "./comps/Button.svelte"
 	import HorizontalCard from "./comps/HorizontalCard.svelte"
 	import Routine from "./Routine.svelte"

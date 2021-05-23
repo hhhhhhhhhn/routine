@@ -1,5 +1,4 @@
 import { derived, get, writable } from "svelte/store"
-import Routines from "./Routines.svelte"
 
 /** Extended writable store
    Saved and loaded to localstorage with name. 
@@ -51,32 +50,6 @@ export const computedRoutines = derived(
 	}
 )
 
-export const hist = writable([ // history
-	{page: Routines, props: {}, title: "Routines"}
-])
-
-/** Goes to a component as page */
-export const goTo = function (page = Routines, props = {}, title = "Routines") {
-	window.history.pushState({}, title, location.href)
-	hist.update(function(old) {
-		return [{page, props, title}, ...old]
-	})
-}
-
-/** Goes back n pages in history */
-export const goBack = function (n = 1) {
-	if(get(hist).length <= 1) return true
-	window.history.go(-n)
-}
-
-/** Handles the back button */
-window.onpopstate = function () {
-	if(get(hist).length <= 1) return
-	hist.update(function(old) {
-		return old.slice(1)
-	})
-}
-
 /** Gets the total time of the ith routine. Includes breaks */
 export const getRoutineTime = function (i) {
 	let routine
@@ -119,35 +92,6 @@ export const getRoutineCalories = function (i) {
 	}
 }
 
-export let dialogue = writable({text: "", callback: function(){}})
-
-/** Returns answers of yes/no question. */
-export const ask = async function(text) {
-	if(get(dialogue).text) return new Promise(function(resolve) { // already asking
-		resolve(false)
-	})
-	return new Promise(function(resolve) {
-		dialogue.set({text: text, callback: function(value) {
-			dialogue.set({text: "", callback: function(){}})
-			resolve(value)
-		}})
-	})
-}
-
-/** Returns the index of the option chosen for the question text given. */
-export const multiple = async function (text, options) {
-	if(get(dialogue).text) return new Promise(function(resolve) { // already asking
-		resolve(false)
-	})
-	return new Promise(function(resolve) {
-		dialogue.set({text: text, options: options, callback: function(value) {
-			dialogue.set({text: "", callback: function(){}})
-			resolve(value)
-		}})
-	})
-}
-
-
 let id = Number(localStorage.getItem("id")) || 99
 /** Generates new non-repeating ID. */
 export const newId = function() {
@@ -167,6 +111,4 @@ window.wipe = function() {
 	localStorage.removeItem("exerciseTable")
 	window.location.reload()
 }
-
-window.ask = ask
 // */
