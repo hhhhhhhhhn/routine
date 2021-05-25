@@ -26,40 +26,91 @@ export const routines = persistant("routines", [
 	]}
 ])
 
+routines.subscribe(routines.save)
+
 export const exerciseTable = persistant("exerciseTable", [
 	{id: 5, name: "Example Exercise", calories: 2}
 ])
 
+exerciseTable.subscribe(exerciseTable.save)
+
 export const computedRoutines = derived(
 	[routines, exerciseTable],
 
-	function([$routines, $exerciseTable], set) {
-		let value = []
-		for(let routine of $routines) {
-			let computedExercises = routine.exercises.map(function (exercise) {
-				return {
-					...$exerciseTable.find(function (x) {
-						return exercise.exerciseId === x.id
-					}),
-					...exercise
-				}
-			})
-			value.push({...routine, computedExercises})
-		}
-		set(value)
+	function([$routines], set) {
+		set($routines.map(function (routine) {
+			return {
+				...routine,
+				exercises: getRoutineExercises(routine),
+				time: getRoutineTime(routine),
+				calories: getRoutineCalories(routine)
+			}
+		}))
 	}
 )
 
-/** Gets the total time of the ith routine. Includes breaks */
-export const getRoutineTime = function (i) {
-	let routine
-	try {
-		routine = get(routines)[i]
-	} catch {
-		return 0
-	}
+export const addEmptyRoutine = function() {
+	routines.update(function(old) {
+		return [...old, {id: newId(), name: "New Routine", break: 10}]	
+	})
+}
 
-	if (routine.exercises.length == 0) return 0
+export const deleteRoutine = function (routineIndex) {
+	routines.update(function (old) {
+		return [...old.slice(0, i), ...old.slice(i + 1)]
+	})
+}
+
+export const setRoutineNameAndBreak = function(routineIndex, name, breakTime) {
+	routines.update(function(old) {
+		old[routineIndex].name = name
+		old[routineIndex].break = breakTime
+		return old
+	})
+}
+
+export const removeRoutineExercise = function(routineIndex, routineExerciseIndex) {
+	routines.update(function(old) {
+		old[routineIndex].exercises = [
+			...old[routineIndex].exercises.slice(0, routineExerciseIndex),
+			...old[routineIndex].exercises.slice(routineExerciseIndex + 1)
+		]
+		return old
+	})
+}
+
+export const swapRoutineExercises = function(routineIndex, i, j) {
+	routines.update(function(old) {
+		try {
+			let temp = old[routineIndex].exercises[i]
+			old[routineIndex].exercises[i] = old[routineIndex].exercises[j]
+			old[routineIndex].exercises[j] = temp
+		}
+		catch{}
+		return old
+	})
+}
+
+export const getExerciseById = function(id) {
+	for (let exercise of get(exerciseTable)) {
+		if(exercise.id === id)
+			return exercise
+	}
+	return undefined
+}
+
+export const getRoutineExercises = function (routine) {
+	return routine.exercises.map(function (routineExercise) {
+		return {
+			...getExerciseById(routineExercise.exerciseId),
+			...routineExercise
+		}
+	})
+}
+
+/** Gets the total time of the ith routine. Includes breaks */
+export const getRoutineTime = function (routine) {
+	if (!routine.exercises?.length) return 0
 	let totalTime = 0
 
 	for(let { time } of routine.exercises) {
@@ -71,19 +122,14 @@ export const getRoutineTime = function (i) {
 }
 
 /** Gets the total calories of the ith routine. */
-export const getRoutineCalories = function (i) {
+export const getRoutineCalories = function (routine) {
 	try {
-		let routine = get(routines)[i]
-		let exercises = get(exerciseTable)
 		let totalCalories = 0
 	
 		for(let { exerciseId, reps, time } of routine.exercises) {
-			let exercise = exercises.find(function(x) {
-				return x.id === exerciseId
-			})
-			if(exercise === undefined)
-				continue
-			totalCalories += exercise.calories * (reps || time)
+			let exercise = getExerciseById(exerciseId)
+			if(exercise !== undefined)
+				totalCalories += exercise.calories * (reps || time)
 		}
 		return Math.round(totalCalories / 10) * 10 // Round to decimal
 	}
@@ -101,7 +147,7 @@ export const newId = function() {
 
 // /* DEGUB
 window.log = function() {
-	console.log(get(routines), get(exerciseTable), get(hist), get(dialogue))
+	console.log(get(routines), get(exerciseTable), get(computedRoutines))
 }
 
 window.wipe = function() {
@@ -109,6 +155,7 @@ window.wipe = function() {
 	exerciseTable.set(null)
 	localStorage.removeItem("routines")
 	localStorage.removeItem("exerciseTable")
+	window.onbeforeunload = null
 	window.location.reload()
 }
 // */

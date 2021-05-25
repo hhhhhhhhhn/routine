@@ -6,77 +6,70 @@
 	import Go from "./Go.svelte"
 	import AddExercise from "./AddExercise.svelte"
 	import {
-		exerciseTable,
-		routines,
-		getRoutineTime,
-		getRoutineCalories,
-		computedRoutines
+		computedRoutines,
+		removeRoutineExercise,
+		setRoutineNameAndBreak,
+		swapRoutineExercises
 	} from "./js/store.js"
 	import { goTo } from "./js/history.js"
 	import { multiple } from "./js/dialogue.js"
 
 	import { holdable } from "./comps/holdable.js"
 	import { fade } from "svelte/transition"
+	import { onDestroy } from "svelte"
 
-	$: [$routines[i].name, $routines[i].break, routines.save()] // saves routines when on of them is changed
+	let routine = $computedRoutines[i]
+
+	let name = routine.name
+	let breakTime = routine.break
+
+	let unsubscribe = computedRoutines.subscribe(function (computedRoutines) {
+		routine = computedRoutines[i]
+	})
+
+	onDestroy(unsubscribe)
+
+	$: setRoutineNameAndBreak(i, name, breakTime)
 </script>
 
-<h1 contenteditable="true" bind:textContent={$routines[i].name} />
+<h1 contenteditable="true" bind:textContent={name} />
 <info>
-	{#key ($routines[i], $exerciseTable)}
-		<p>{Math.round(getRoutineTime(i) / 60)} minute(s)</p>
-		<p>{getRoutineCalories(i)} kcal.</p>
-		{#if $routines[i].exercises}
-			<p>{$routines[i].exercises.length} exercises</p>
-		{/if}
-	{/key}
+	<p>{Math.round(routine.time / 60)} minute(s)</p>
+	<p>{routine.calories} kcal.</p>
+	{#if routine.exercises}
+		<p>{routine.exercises.length} exercises</p>
+	{/if}
 	<div>
-		<input type="number" bind:value={$routines[i].break} />
+		<input type="number" bind:value={breakTime} />
 		<span>second breaks</span>
 	</div>
 </info>
 
 <list>
-	{#if $routines[i].exercises && $routines[i].exercises.length}
-		{#each $computedRoutines[i].computedExercises as { name, reps, time, calories, id }, j (id)}
+	{#if routine?.exercises?.length}
+		{#each routine.exercises as exercise, j (exercise.id)}
 			<div
 				use:holdable
 				on:hold={async function () {
 					let action = await multiple(
-						`What do you want to do with "${name}"?`,
+						`What do you want to do with "${exercise.name}"?`,
 						["Remove", "Move Up", "Move Down", "Cancel"]
 					)
 
 					switch (action) {
 						case 0: // Removes jth exercise
-							$routines[i].exercises = [
-								...$routines[i].exercises.slice(0, j),
-								...$routines[i].exercises.slice(j + 1)
-							]
+							removeRoutineExercise(i, j)
 							break
 						case 1: // Moves jth exercise up
-							if (j == 0) break
-							let temp = $routines[i].exercises[j]
-							$routines[i].exercises[j] =
-								$routines[i].exercises[j - 1]
-							$routines[i].exercises[j - 1] = temp
+							swapRoutineExercises(i, j, j - 1)
 							break
 						case 2: // Moves jth exercise down
-							if (j == $routines[i].exercises.length - 1) break
-							let temp2 = $routines[i].exercises[j]
-							$routines[i].exercises[j] =
-								$routines[i].exercises[j + 1]
-							$routines[i].exercises[j + 1] = temp2
+							swapRoutineExercises(i, j, j + 1)
 							break
 						default:
 							// Does nothing
 							break
 					}
-					routines.update(function (old) {
-						// just send update
-						return old
-					})
-					routines.save()
 				}}
 				on:press={function () {
 					if (name !== undefined)
@@ -88,13 +81,17 @@
 				}}
 			>
 				<HorizontalCard>
-					<b>{name}</b>
-					{#if reps}
-						<p>{reps} reps</p>
-						<p>{Math.round(reps * calories)} kcal.</p>
+					<b>{exercise.name}</b>
+					{#if exercise.reps}
+						<p>{exercise.reps} reps</p>
+						<p>
+							{Math.round(exercise.reps * exercise.calories)} kcal.
+						</p>
 					{:else}
-						<p>{time} seconds</p>
-						<p>{Math.round(time * calories)} kcal.</p>
+						<p>{exercise.time} seconds</p>
+						<p>
+							{Math.round(exercise.time * exercise.calories)} kcal.
+						</p>
 					{/if}
 				</HorizontalCard>
 			</div>
@@ -106,8 +103,7 @@
 <button
 	id="go"
 	on:click={function () {
-		if ($computedRoutines[i].computedExercises.length)
-			goTo(Go, { i: i }, "")
+		if (routine.exercises.length) goTo(Go, { i: i }, "")
 	}}>Go!</button
 >
 

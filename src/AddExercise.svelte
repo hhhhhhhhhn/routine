@@ -1,24 +1,28 @@
 <script>
 	export let routineIndex = 0
 	export let routineExerciseIndex = 0
-	import { exerciseTable, routines } from "./js/store.js"
+	import {
+		exerciseTable,
+		computedRoutines,
+		getExerciseById
+	} from "./js/store.js"
 	import { hist } from "./js/history.js"
 
 	let routineExercise =
-		$routines[routineIndex].exercises[routineExerciseIndex]
-	let exercise = $exerciseTable.find(function (x) {
-		return x.id === routineExercise.exerciseId
-	})
+		$computedRoutines[routineIndex].exercises[routineExerciseIndex]
+	let exercise = getExerciseById(routineExerciseIndex)
 
 	$: [exercise.name, exercise.calories, exerciseTable.save()] // saves on
 	$: [routineExercise.time, routineExercise.reps, routines.save()] // change
 </script>
 
-<h1 contenteditable="true" bind:textContent={exercise.name} />
+<h1 contenteditable="true" bind:textContent={routineExercise.name} />
 
 <info>
 	<div>
-		<input type="number" bind:value={exercise.calories} /><span>kcal.</span>
+		<input type="number" bind:value={routineExercise.calories} /><span
+			>kcal.</span
+		>
 	</div>
 	<div>
 		<input type="number" bind:value={routineExercise.time} /><span

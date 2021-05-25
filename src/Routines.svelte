@@ -1,9 +1,8 @@
 <script>
 	import {
-		routines,
-		getRoutineTime,
-		getRoutineCalories,
-		newId
+		computedRoutines,
+		addEmptyRoutine,
+		deleteRoutine
 	} from "./js/store"
 	import { goTo } from "./js/history.js"
 	import { ask } from "./js/dialogue.js"
@@ -14,29 +13,26 @@
 </script>
 
 <div id="list">
-	{#each $routines as routine, i (routine.id)}
+	{#each $computedRoutines as routine, i (routine.id)}
 		<div
 			use:holdable
 			on:press={function () {
 				goTo(Routine, { i }, "")
 			}}
 			on:hold={async function () {
-				if (await ask(`Delete "${routine.name}"?`))
-					routines.update(function (old) {
-						return [...old.slice(0, i), ...old.slice(i + 1)]
-					})
+				if (await ask(`Delete "${routine.name}"?`)) deleteRoutine(i)
 			}}
 		>
 			<HorizontalCard>
 				<b>{routine.name}</b>
 				<p>
-					{Math.round(getRoutineTime(i) / 60)} min.
+					{Math.round(routine.time / 60)} min.
 				</p>
-				<p>{getRoutineCalories(i)} kcal.</p>
+				<p>{routine.calories} kcal.</p>
 			</HorizontalCard>
 		</div>
 	{/each}
-	{#if $routines.length == 0}
+	{#if $computedRoutines.length == 0}
 		<p id="notfound">No routines</p>
 	{/if}
 </div>
@@ -44,14 +40,8 @@
 <div id="button">
 	<Button
 		callback={function () {
-			$routines.push({
-				id: newId(),
-				name: "New Routine",
-				break: 10,
-				exercises: []
-			})
-			routines.save()
-			goTo(Routine, { i: $routines.length - 1 }, "")
+			addEmptyRoutine()
+			goTo(Routine, { i: $computedRoutines.length - 1 }, "")
 		}}
 	/>
 </div>
