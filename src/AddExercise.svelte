@@ -2,49 +2,49 @@
 	export let routineIndex = 0
 	export let routineExerciseIndex = 0
 	import {
-		exerciseTable,
 		computedRoutines,
-		getExerciseById
+		setExerciseDefaultTimeAndReps,
+		setExerciseNameAndCalories,
+		setRoutineExerciseTimeAndReps
 	} from "./js/store.js"
 	import { hist } from "./js/history.js"
 
-	let routineExercise =
+	let exercise =
 		$computedRoutines[routineIndex].exercises[routineExerciseIndex]
-	let exercise = getExerciseById(routineExerciseIndex)
 
-	$: [exercise.name, exercise.calories, exerciseTable.save()] // saves on
-	$: [routineExercise.time, routineExercise.reps, routines.save()] // change
+	let { name, calories, time, reps } = exercise
+
+	$: setExerciseNameAndCalories(exercise.exerciseId, name, calories)
+	$: setRoutineExerciseTimeAndReps(
+		routineIndex,
+		routineExerciseIndex,
+		time,
+		reps
+	)
 </script>
 
-<h1 contenteditable="true" bind:textContent={routineExercise.name} />
+<h1 contenteditable="true" bind:textContent={name} />
 
 <info>
 	<div>
-		<input type="number" bind:value={routineExercise.calories} /><span
-			>kcal.</span
-		>
+		<input type="number" bind:value={calories} /><span>kcal.</span>
 	</div>
 	<div>
-		<input type="number" bind:value={routineExercise.time} /><span
-			>seconds</span
-		>
+		<input type="number" bind:value={time} /><span>seconds</span>
 	</div>
 	<div>
-		<input type="number" bind:value={routineExercise.reps} /><span
-			>reps</span
-		>
+		<input type="number" bind:value={reps} /><span>reps</span>
 	</div>
 </info>
 <button
 	on:click={function () {
+		setExerciseDefaultTimeAndReps(exercise.exerciseId, time, reps)
 		// goes back to routine
 		hist.update(function (old) {
 			old.shift()
 			if (old[0].title === "Add Exercise") old.shift()
 			return old
 		})
-		exercise.lastReps = routineExercise.reps
-		exercise.lastTime = routineExercise.time
 	}}>OK</button
 >
 

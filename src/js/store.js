@@ -51,7 +51,10 @@ export const computedRoutines = derived(
 
 export const addEmptyRoutine = function() {
 	routines.update(function(old) {
-		return [...old, {id: newId(), name: "New Routine", break: 10}]	
+		return [
+			...old,
+			 {id: newId(), name: "New Routine", break: 10, exercises: []}
+		]	
 	})
 }
 
@@ -79,15 +82,24 @@ export const removeRoutineExercise = function(routineIndex, routineExerciseIndex
 	})
 }
 
+export const setRoutineExerciseTimeAndReps = 
+	function(routineIndex, routineExerciseIndex, time, reps) {
+		routines.update(function(routines) {
+			routines[routineIndex].exercises[routineExerciseIndex].time = time
+			routines[routineIndex].exercises[routineExerciseIndex].reps = reps
+			return routines
+		})
+	}
+
 export const swapRoutineExercises = function(routineIndex, i, j) {
-	routines.update(function(old) {
-		try {
-			let temp = old[routineIndex].exercises[i]
-			old[routineIndex].exercises[i] = old[routineIndex].exercises[j]
-			old[routineIndex].exercises[j] = temp
+	routines.update(function(routines) {
+		let routineExerciseLength = routines[routineIndex].exercises.length
+		if (Math.min(i, j) >= 0 && Math.max(i, j) < routineExerciseLength) {
+			let temp = routines[routineIndex].exercises[i]
+			routines[routineIndex].exercises[i] = routines[routineIndex].exercises[j]
+			routines[routineIndex].exercises[j] = temp
 		}
-		catch{}
-		return old
+		return routines
 	})
 }
 
@@ -99,12 +111,70 @@ export const getExerciseById = function(id) {
 	return undefined
 }
 
+export const getExerciseIndexById = function(id) {
+	for (let [i, exercise] of get(exerciseTable).entries()) {
+		if(exercise.id === id)
+			return i
+	}
+	return undefined
+}
+
 export const getRoutineExercises = function (routine) {
 	return routine.exercises.map(function (routineExercise) {
 		return {
 			...getExerciseById(routineExercise.exerciseId),
 			...routineExercise
 		}
+	})
+}
+
+export const addEmptyExercise = function() {
+	exerciseTable.update(function(exerciseTable) {
+		exerciseTable.push({
+			id: newId(),
+			name: "New Exercise",
+			calories: 0.1
+		})
+		return exerciseTable
+	})
+}
+
+export const addExerciseToRoutine = function(routineIndex, exercise) {
+	routines.update(function(routines) {
+		routines[routineIndex].exercises.push({
+			id: newId(),
+			exerciseId: exercise.id,
+			reps: exercise.lastReps ?? 0,
+			time: exercise.lastTime ?? 30
+		})
+		return routines
+	})
+}
+
+export const deleteExercise = function(exerciseIndex) {
+	exerciseTable.update(function (exerciseTable) {
+		return [
+			...exerciseTable.slice(0, exerciseIndex),
+			...exerciseTable.slice(exerciseIndex + 1)
+		]
+	})
+}
+
+export const setExerciseNameAndCalories = function(exerciseId, name, calories) {
+	let exerciseIndex = getExerciseIndexById(exerciseId)
+	exerciseTable.update(function(exerciseTable) {
+		exerciseTable[exerciseIndex].name = name
+		exerciseTable[exerciseIndex].calories = calories
+		return exerciseTable
+	})
+}
+
+export const setExerciseDefaultTimeAndReps = function(exerciseId, time, reps) {
+	let exerciseIndex = getExerciseIndexById(exerciseId)
+	exerciseTable.update(function(exerciseTable) {
+		exerciseTable[exerciseIndex].lastTime = time
+		exerciseTable[exerciseIndex].lastReps = reps
+		return exerciseTable
 	})
 }
 
@@ -151,11 +221,11 @@ window.log = function() {
 }
 
 window.wipe = function() {
+	setTimeout(window.location.reload)
 	routines.set(null)
 	exerciseTable.set(null)
 	localStorage.removeItem("routines")
 	localStorage.removeItem("exerciseTable")
 	window.onbeforeunload = null
-	window.location.reload()
 }
 // */

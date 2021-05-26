@@ -6,8 +6,10 @@
 	import { onDestroy } from "svelte"
 
 	let currentExerciseIndex = -1 // -1 means not to start yet.
-	$: currentExercise =
-		$computedRoutines[i].computedExercises[currentExerciseIndex]
+
+	let routine = $computedRoutines[i]
+
+	$: currentExercise = routine.exercises[currentExerciseIndex]
 
 	let currentTime = 0 // time from exercise/break start in seconds
 	let inBreak = false
@@ -19,30 +21,29 @@
 		if (currentExerciseIndex == -1 || paused) return
 		currentTime += intervalTime
 
-		if (inBreak) {
-			if (currentTime >= $computedRoutines[i].break) {
-				// break complete
-				beep("triangle", 4)
-				currentTime = intervalTime
-				inBreak = false
-			}
-			return
-		}
-
-		// if not in break
-		if (currentTime >= currentExercise.time) {
-			// exercise complete
-			beep("sine", 4)
-			currentTime = intervalTime
-			inBreak = true
-			if (
-				currentExerciseIndex <
-				$computedRoutines[i].computedExercises.length - 1
-			)
-				currentExerciseIndex++
-			else currentExerciseIndex = -1
-		}
+		if (inBreak && currentTime >= $computedRoutines[i].break) finishBreak()
+		else if (!inBreak && currentTime >= currentExercise.time)
+			finishExercise()
 	}, intervalTime * 1000)
+
+	function finishBreak() {
+		beep("triangle", 4)
+		currentTime = intervalTime
+		inBreak = false
+	}
+
+	function finishExercise() {
+		beep("sine", 4)
+		currentTime = intervalTime
+		inBreak = true
+		goToNextExercise()
+	}
+
+	function goToNextExercise() {
+		if (currentExerciseIndex < routine.exercises.length - 1)
+			currentExerciseIndex++
+		else currentExerciseIndex = -1
+	}
 
 	function start() {
 		currentExerciseIndex = 0

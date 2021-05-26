@@ -1,7 +1,13 @@
 <script>
 	export let routineIndex = 0
 
-	import { exerciseTable, routines, newId } from "./js/store.js"
+	import {
+		exerciseTable,
+		computedRoutines,
+		addExerciseToRoutine,
+		deleteExercise,
+		addEmptyExercise
+	} from "./js/store.js"
 	import { goTo } from "./js/history.js"
 	import { ask } from "./js/dialogue"
 	import Button from "./comps/Button.svelte"
@@ -18,30 +24,21 @@
 				id="exercise"
 				use:holdable
 				on:press={function () {
-					$routines[routineIndex].exercises.push({
-						id: newId(),
-						exerciseId: exercise.id,
-						reps: exercise.lastReps ?? 0,
-						time: exercise.lastTime ?? 30
-					})
-					routines.save()
+					addExerciseToRoutine(routineIndex, exercise)
 					goTo(
 						AddExercise,
 						{
 							routineIndex: routineIndex,
 							routineExerciseIndex:
-								$routines[routineIndex].exercises.length - 1
+								$computedRoutines[routineIndex].exercises
+									.length - 1
 						},
 						""
 					)
 				}}
 				on:hold={async function () {
-					if (await ask(`Delete "${exercise.name}"?`)) {
-						exerciseTable.update(function (old) {
-							return [...old.slice(0, i), ...old.slice(i + 1)]
-						})
-						exerciseTable.save()
-					}
+					if (await ask(`Delete "${exercise.name}"?`))
+						deleteExercise(i)
 				}}
 			>
 				<HorizontalCard>
@@ -58,25 +55,17 @@
 <div id="button">
 	<Button
 		callback={function () {
-			$exerciseTable.push({
-				id: newId(),
-				name: "New Exercise",
-				calories: 0.1
-			})
-			$routines[routineIndex].exercises.push({
-				id: newId(),
-				exerciseId: $exerciseTable[$exerciseTable.length - 1].id,
-				reps: 0,
-				time: 30
-			})
-			routines.save()
-			exerciseTable.save()
+			addEmptyExercise()
+			addExerciseToRoutine(
+				routineIndex,
+				$exerciseTable[$exerciseTable.length - 1]
+			)
 			goTo(
 				AddExercise,
 				{
 					routineIndex: routineIndex,
 					routineExerciseIndex:
-						$routines[routineIndex].exercises.length - 1
+						$computedRoutines[routineIndex].exercises.length - 1
 				},
 				""
 			)
