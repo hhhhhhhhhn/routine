@@ -60,7 +60,7 @@ export const addEmptyRoutine = function() {
 
 export const deleteRoutine = function (routineIndex) {
 	routines.update(function (old) {
-		return [...old.slice(0, i), ...old.slice(i + 1)]
+		return [...old.slice(0, routineIndex), ...old.slice(i + routineIndex)]
 	})
 }
 
