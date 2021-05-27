@@ -3,6 +3,7 @@
 
 	import { computedRoutines } from "./js/store.js"
 	import { beep } from "./comps/sounds.js"
+	import KeepAwake from "./comps/KeepAwake.svelte"
 	import { onDestroy } from "svelte"
 
 	let currentExerciseIndex = -1 // -1 means not to start yet.
@@ -104,6 +105,7 @@
 	})
 </script>
 
+<KeepAwake />
 <container>
 	{#if currentExerciseIndex == -1}
 		<button id="start" on:click={start}>Start</button>
