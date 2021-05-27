@@ -12,4 +12,5 @@ export function beep(type = "triangle", duration = 2) {
 	oscilator.start(0)
 	gain.gain
 		.exponentialRampToValueAtTime(0.0001, context.currentTime + duration)
+	oscilator.stop(context.currentTime + duration)
 }
