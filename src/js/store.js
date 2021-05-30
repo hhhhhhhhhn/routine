@@ -1,21 +1,5 @@
-import { derived, get, writable } from "svelte/store"
-
-/** Extended writable store
-   Saved and loaded to localstorage with name. 
-   Also exposes save() function to do it manually */
-function persistant(name, initial) {
-	let storedValue = JSON.parse(localStorage.getItem(name))
-
-	let store = writable(storedValue === null ? initial : storedValue)
-
-	store.save = function() {
-		localStorage.setItem(name, JSON.stringify(get(store)))
-		// console.log(`${name} saved!`)
-	}
-
-	window.addEventListener("beforeunload", store.save)
-	return store
-}
+import { derived, get } from "svelte/store"
+import { persistant } from "../comps/persistant.js"
 
 export const routines = persistant("routines", [
 	{id: 0, name: "Example Routine", break: 10, exercises: [
@@ -27,27 +11,6 @@ export const routines = persistant("routines", [
 ])
 
 routines.subscribe(routines.save)
-
-export const exerciseTable = persistant("exerciseTable", [
-	{id: 5, name: "Example Exercise", calories: 2}
-])
-
-exerciseTable.subscribe(exerciseTable.save)
-
-export const computedRoutines = derived(
-	[routines, exerciseTable],
-
-	function([$routines], set) {
-		set($routines.map(function (routine) {
-			return {
-				...routine,
-				exercises: getRoutineExercises(routine),
-				time: getRoutineTime(routine),
-				calories: getRoutineCalories(routine)
-			}
-		}))
-	}
-)
 
 export const addEmptyRoutine = function() {
 	routines.update(function(old) {
@@ -79,6 +42,73 @@ export const removeRoutineExercise = function(routineIndex, routineExerciseIndex
 			...old[routineIndex].exercises.slice(routineExerciseIndex + 1)
 		]
 		return old
+	})
+}
+
+export const exerciseTable = persistant("exerciseTable", [
+	{id: 5, name: "Example Exercise", calories: 2}
+])
+
+exerciseTable.subscribe(exerciseTable.save)
+
+export const computedRoutines = derived(
+	[routines, exerciseTable],
+
+	function([$routines], set) {
+		set($routines.map(function (routine) {
+			return {
+				...routine,
+				exercises: getRoutineExercises(routine),
+				time: getRoutineTime(routine),
+				calories: getRoutineCalories(routine)
+			}
+		}))
+	}
+)
+
+export const categories = persistant("categories", [
+	{id: 6, name: "Example Category", exercises: [
+		{id: 7, exerciseId: 5}
+	]}
+])
+
+categories.subscribe(categories.save)
+
+export const computedCategories = derived(
+	[categories, exerciseTable],
+
+	function([$categories], set) {
+		set($categories.map(function (category) {
+			return {
+				...category,
+				exercises: getCategoryExercises(category)
+			}
+		}))
+	}
+)
+
+export const setCategoryName = function(categoryIndex, name) {
+	categories.update(function(categories) {
+		categories[categoryIndex].name = name
+		return categories
+	})
+}
+
+export const getCategoryExercises = function(category) {
+	return category.exercises.map(function (categoryExercise) {
+		return {
+			...getExerciseById(categoryExercise.exerciseId),
+			...categoryExercise
+		}
+	})
+}
+
+export const addEmptyCategory = function() {
+	categories.update(function(categories) {
+		return [
+			...categories,
+			{id: newId(), name: "New Category", exercises: []}
+		]	
 	})
 }
 
@@ -151,7 +181,18 @@ export const addExerciseToRoutine = function(routineIndex, exercise) {
 	})
 }
 
-export const deleteExercise = function(exerciseIndex) {
+export const addExerciseToCategory = function(categoryIndex, exercise) {
+	categories.update(function(categories) {
+		categories[categoryIndex].exercises.push({
+			id: newId(),
+			exerciseId: exercise.id
+		})
+		return categories
+	})
+}
+
+export const deleteExerciseById = function(exerciseId) {
+	let exerciseIndex = getExerciseIndexById(exerciseId)
 	exerciseTable.update(function (exerciseTable) {
 		return [
 			...exerciseTable.slice(0, exerciseIndex),
@@ -217,7 +258,7 @@ export const newId = function() {
 
 // /* DEGUB
 window.log = function() {
-	console.log(get(routines), get(exerciseTable), get(computedRoutines))
+	console.log(get(routines), get(exerciseTable), get(computedRoutines), get(categories), get(computedCategories))
 }
 
 window.wipe = function() {

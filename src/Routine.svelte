@@ -2,9 +2,9 @@
 	export let i = 0
 	import Button from "./comps/Button.svelte"
 	import HorizontalCard from "./comps/HorizontalCard.svelte"
-	import Exercises from "./Exercises.svelte"
+	import Categories from "./Categories.svelte"
 	import Go from "./Go.svelte"
-	import AddExercise from "./AddExercise.svelte"
+	import AddExercise from "./Exercise.svelte"
 	import {
 		computedRoutines,
 		removeRoutineExercise,
@@ -110,7 +110,7 @@
 <div id="button">
 	<Button
 		callback={function () {
-			goTo(Exercises, { routineIndex: i }, "Add Exercise")
+			goTo(Categories, { routineIndex: i }, "Add Exercise")
 		}}
 	/>
 </div>

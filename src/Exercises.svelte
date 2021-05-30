@@ -13,7 +13,7 @@
 	import Button from "./comps/Button.svelte"
 	import HorizontalCard from "./comps/HorizontalCard.svelte"
 	import { holdable } from "./comps/holdable.js"
-	import AddExercise from "./AddExercise.svelte"
+	import AddExercise from "./Exercise.svelte"
 	import { fade } from "svelte/transition"
 </script>
 
